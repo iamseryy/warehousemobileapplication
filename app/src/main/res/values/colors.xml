@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#A5260A</color>
+    <color name="colorTransparrent">#80000000</color>
+    <color name="colorPrimaryDark">@color/white</color>
+    <color name="colorAccent">#03DAC5</color>
     <color name="black">#FF000000</color>
+    <color name="grey">#59000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="mint">#E8F5E9</color>
+    <color name="saveColor">#FF005494</color>
+    <color name="barcode_reticle_background">#99000000</color>
+    <color name="barcode_reticle_stroke">#ffffff</color>
+    <color name="colorCopyButton">#00897B</color>
+    <color name="inforColor">#C55F5F</color>
+    <color name="bzColor_0.35alpha">#59005494</color>
+    <color name="bzColor">#005494</color>
+    <color name="negativeColor">#E57373</color>
+    <color name="neutralColor">#FFFFFFFF</color>
+    <color name="positiveColor">#4DB6AC</color>
+    <color name="shrine_pink_900">#BEC28A8A</color>
+    <color name="shrine_pink_100">#FF8BB3</color>
+    <color name="shrine_pink_light">#2EB417</color>
+    <color name="shrine_red">#C80044</color>
 </resources>

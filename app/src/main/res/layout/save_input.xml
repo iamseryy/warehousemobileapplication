@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/qntyText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/qnty"
+        android:layout_marginHorizontal="24dp"
+        android:minWidth="@dimen/custom_min_width"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="true"
+            android:textColor="@color/black"
+            android:digits="0123456789."
+            android:inputType="numberDecimal"
+            android:imeOptions="actionDone"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</FrameLayout>

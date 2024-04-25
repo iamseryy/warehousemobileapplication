@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ru.bz.mobile.inventory.presentation.viewModel.main.MainViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.view.main.MainFragment"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/linearProgressIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorColor="@color/bzColor"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linearLayoutCompat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="24dp"
+                android:paddingTop="10dp"
+                android:paddingRight="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearProgressIndicator">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cwarText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/cwar"
+                    android:minWidth="@dimen/custom_min_width"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itemText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:focusable="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/locaText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:endIconMode="clear_text"
+                    android:hint="@string/loca"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cwarText">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{ viewModel.edited }"
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/itemText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    app:endIconMode="clear_text"
+                    android:hint="@string/item"
+                    android:minWidth="@dimen/custom_min_width"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/locaText"
+                    tools:ignore="PrivateResource">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{ viewModel.edited }"
+
+                        android:imeOptions="actionDone"
+                        android:inputType="text"
+                        android:textColor="@color/black" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/itemText">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/clotText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:hint="@string/clot"
+                        android:minWidth="@dimen/custom_min_width"
+                        app:endIconCheckable="true"
+
+                        app:endIconMode="clear_text"
+                        tools:ignore="PrivateResource">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:enabled="@{ viewModel.edited }"
+
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:textColor="@color/black">
+
+                        </com.google.android.material.textfield.TextInputEditText>
+
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/navigateClots"
+                        style="?attr/materialIconButtonFilledStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:visibility="@{ viewModel.canNavigateClots }"
+                        app:icon="@drawable/baseline_arrow_forward_24" />
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/currentRequestText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{ viewModel.predictedAction }"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toTopOf="@+id/bottomAppBar"
+                    app:layout_constraintEnd_toEndOf="@+id/bottomAppBar"
+                    app:layout_constraintStart_toStartOf="@+id/bottomAppBar" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/stkr_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/stkr_switch"
+                    android:textSize="16dp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/lock_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/lock_switch"
+                    android:textSize="16dp" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/illiquid_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/illiquid_switch"
+                    android:textSize="16dp" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginBottom="60dp"/>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            style="@style/Widget.Material3.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:menu="@menu/bottom_app_bar"
+            app:menuAlignmentMode="start"
+            app:navigationIcon="@drawable/ic_menu_24dp" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/save"
+            app:iconTint="@color/white"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            android:onClick="@{ ()-> viewModel.save() }"
+            app:backgroundTint="@color/saveColor"
+            app:iconGravity="end"
+            app:icon="@drawable/baseline_save_24"
+             />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/endEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/update"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:backgroundTint="@color/bzColor"
+            android:onClick="@{ ()-> viewModel.endEdit() }"
+            app:icon="@drawable/baseline_check_24"
+            app:iconTint="@color/white" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

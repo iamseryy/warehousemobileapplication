@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="properties_password">111</string>
+    <string name="properties_file_import">/inventory_import.csv</string>
+    <string name="properties_file_import_encoding">windows-1251</string>
+    <string name="properties_file_export">/inventory_export.csv</string>
+    <string name="properties_file_export_encoding">UTF-8</string>
+    <string name="properties_dataMatrix_delimiter">;</string>
+</resources>

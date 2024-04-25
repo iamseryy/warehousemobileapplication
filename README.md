@@ -1,2 +1,0 @@
-# warehousemobileapplication
-warehouse mobile application

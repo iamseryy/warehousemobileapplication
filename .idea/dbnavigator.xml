@@ -354,6 +354,9 @@
         <compile-dependencies value="ASK" />
         <always-show-controls value="false" />
       </compiler>
+      <debugger>
+        <debugger-type value="ASK" />
+      </debugger>
     </operation-settings>
     <ddl-file-settings>
       <extensions>

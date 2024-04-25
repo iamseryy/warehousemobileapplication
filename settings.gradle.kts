@@ -13,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Baltic Shipyard warehouse mobile application"
+rootProject.name = "baltic-shipyard-inventory-mobile-app"
 include(":app")
+ 

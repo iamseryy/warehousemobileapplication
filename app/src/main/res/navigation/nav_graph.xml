@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/nav_main">
+
+    <fragment
+        android:id="@+id/nav_main"
+        android:name="ru.bz.mobile.inventory.presentation.view.main.MainFragment"
+        android:label="@string/header_title"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_nav_main_to_nav_login"
+            app:destination="@id/nav_login"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_nav_main_to_nav_settings"
+            app:destination="@id/nav_settings" />
+        <action
+            android:id="@+id/action_nav_main_to_nav_clots"
+            app:destination="@id/nav_clots" />
+        <action
+            android:id="@+id/action_nav_main_to_nav_locas"
+            app:destination="@id/nav_locas" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="ru.bz.mobile.inventory.presentation.view.login.LoginFragment"
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_nav_login_to_nav_settings"
+            app:destination="@id/nav_settings"
+            app:popUpTo="@+id/nav_main"
+            app:popUpToInclusive="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="ru.bz.mobile.inventory.presentation.view.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_nav_settings_to_nav_main"
+            app:destination="@id/nav_main"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_clots"
+        android:name="ru.bz.mobile.inventory.presentation.view.clots.ClotsFragment"
+        tools:layout="@layout/fragment_clots"
+        android:label="@string/porns" >
+
+        <action
+            android:id="@+id/action_nav_clots_to_nav_locas"
+            app:destination="@id/nav_locas" />
+        <action
+            android:id="@+id/action_nav_clots_to_nav_main"
+            app:destination="@id/nav_main" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_locas"
+        android:name="ru.bz.mobile.inventory.presentation.view.locas.LocasFragment"
+        tools:layout="@layout/fragment_locas"
+        android:label="@string/locas" >
+
+        <action
+            android:id="@+id/action_nav_locas_to_nav_main"
+            app:destination="@id/nav_main" />
+    </fragment>
+
+</navigation>
