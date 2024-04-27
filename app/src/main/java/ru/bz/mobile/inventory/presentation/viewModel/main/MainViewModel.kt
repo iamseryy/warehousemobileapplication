@@ -20,31 +20,33 @@ import ru.bz.mobile.inventory.presentation.ClotBundle
 import ru.bz.mobile.inventory.presentation.ClotLocaBundle
 import ru.bz.mobile.inventory.presentation.CwarItemBundle
 import ru.bz.mobile.inventory.presentation.CwarItemClotBundle
-import ru.bz.mobile.inventory.model.main.DataMatrix
+import ru.bz.mobile.inventory.domain.model.scanner.DataMatrix
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.presentation.ResultProvider
-import ru.bz.mobile.inventory.config.DataStoreManager
 import ru.bz.mobile.inventory.presentation.controllers.BarcodeController
-import ru.bz.mobile.inventory.model.DataStoreSave
-import ru.bz.mobile.inventory.model.IOP
-import ru.bz.mobile.inventory.model.main.MainModel
-import ru.bz.mobile.inventory.model.main.ScanResultListener
-import ru.bz.mobile.inventory.model.main.Validator
-import ru.bz.mobile.inventory.data.room.MainRepository
+import ru.bz.mobile.inventory.domain.model.DataStoreSave
+import ru.bz.mobile.inventory.domain.model.IOP
+import ru.bz.mobile.inventory.domain.model.main.MainModel
+import ru.bz.mobile.inventory.domain.model.scanner.ScanResultListener
+import ru.bz.mobile.inventory.domain.model.main.Validator
 import ru.bz.mobile.inventory.util.GsonSerializer
-import ru.bz.mobile.inventory.util.YesNo
+import ru.bz.mobile.inventory.domain.model.YesNo
+import ru.bz.mobile.inventory.domain.usecase.DataStoreUseCase
+import ru.bz.mobile.inventory.domain.usecase.MainUseCase
+import ru.bz.mobile.inventory.domain.usecase.ResourcesUseCase
 import ru.bz.mobile.inventory.presentation.view.main.MainActivity
 import ru.bz.mobile.inventory.presentation.view.main.MainFragment
 import java.util.Date
+import javax.inject.Inject
 
-class MainViewModel(
-    private val repo: MainRepository,
+
+class MainViewModel @Inject constructor(
+    private val mainUseCase: MainUseCase,
     private val barcodeController: BarcodeController,
-    private val resources: ResourcesProvider,
-    private val dataStore: DataStoreManager
-) :
-    ViewModel() {
+    private val resourcesUseCase: ResourcesUseCase,
+    private val dataStoreUseCase: DataStoreUseCase
+): ViewModel() {
+
     companion object {
         val TAG: String =
             MainActivity::class.java.simpleName + " " +
@@ -54,7 +56,7 @@ class MainViewModel(
 
     private val _actions: Channel<Action> = Channel(Channel.BUFFERED)
     val actions: Flow<Action> = _actions.receiveAsFlow()
-    private val validator = Validator(repo)
+    private val validator = Validator(mainUseCase)
     private val model = MainModel()
 
     val cwar = MutableLiveData<BindingData>()
@@ -123,14 +125,17 @@ class MainViewModel(
     }
 
     private fun createDataMatrix(result: String): DataMatrix {
-        return result.split(resources.DATAMATRIX_DELIMITER).filter { it.contains("=") }.associate {
-            val (left, right) = it.split("=")
-            left.lowercase() to right
-        }.let { map ->
-            DataMatrix(
-                cwar = map["cwar"], loca = map["loca"], item = map["item"], clot = map["clot"]
-            )
-        }
+        return result
+            .split(resourcesUseCase.getDataMatrixDelimiter())
+            .filter { it.contains("=") }
+            .associate {
+                val (left, right) = it.split("=")
+                left.lowercase() to right
+            }.let { map ->
+                DataMatrix(
+                    cwar = map["cwar"], loca = map["loca"], item = map["item"], clot = map["clot"]
+                )
+            }
     }
 
 
@@ -155,11 +160,11 @@ class MainViewModel(
     }
 
     private fun checkIsCwar(result: String): Boolean {
-        return repo.findCwarSync(result.uppercase())
+        return mainUseCase.findCwarSync(result.uppercase())
     }
 
     private fun checkIsLoca(result: String): Boolean {
-        return repo.findLocaByCwarSync(cwar = model.cwar, result)
+        return mainUseCase.findLocaByCwarSync(cwar = model.cwar, result)
     }
 
     private fun onDataMatrix(dataMatrix: DataMatrix) {
@@ -343,7 +348,7 @@ class MainViewModel(
     }
 
     private fun loadDataStoreData(after: (() -> Unit)? = null) = viewModelScope.launch {
-        dataStore.load().collect() { dataStore ->
+        dataStoreUseCase.load().collect() { dataStore ->
             dataStore.isInventoryDataImported?.let { model.isInventoryDataImported = it }
             dataStore.iopSerialized?.let { serialized ->
                 GsonSerializer.deserializeObject<IOP>(serialized)?.let { iop ->
@@ -354,7 +359,7 @@ class MainViewModel(
             this.cancel()
         }
 
-        Log.d(TAG, "loadDataStoreData# IOP: $dataStore.iopSerialized")
+        Log.d(TAG, "loadDataStoreData# IOP: $dataStoreUseCase.iopSerialized")
     }
 
     private fun barcodeAddListeners() {
@@ -366,7 +371,7 @@ class MainViewModel(
     }
 
     private fun saveDataStoreData(callback: (() -> Unit)? = null) = viewModelScope.launch {
-        dataStore.save(DataStoreSave(iopSerialized = model.iop.serialized()))
+        dataStoreUseCase.save(DataStoreSave(iopSerialized = model.iop.serialized()))
         callback?.invoke()
     }
 
@@ -413,7 +418,7 @@ class MainViewModel(
 
             } else {
                 model.cwar = cwar.uppercase()
-                model.cwarError = resources.getString(R.string.cwar_not_found)
+                model.cwarError = resourcesUseCase.getString(R.string.cwar_not_found)
                 clearLoca()
                 clearItem()
                 clearClot()
@@ -466,7 +471,7 @@ class MainViewModel(
 
             } else {
                 model.loca = loca.uppercase()
-                model.locaError = resources.getString(R.string.loca_not_found)
+                model.locaError = resourcesUseCase.getString(R.string.loca_not_found)
                 clearItem()
                 clearClot()
             }
@@ -512,7 +517,7 @@ class MainViewModel(
                 model.itemError = null
             } else {
                 model.item = item.uppercase()
-                model.itemError = resources.getString(R.string.wrong_item)
+                model.itemError = resourcesUseCase.getString(R.string.wrong_item)
                 clearClot()
             }
         }
@@ -552,7 +557,7 @@ class MainViewModel(
                 model.clotError = null
             } else {
                 model.clot = clot.uppercase()
-                model.clotError = resources.getString(R.string.wrong_clot)
+                model.clotError = resourcesUseCase.getString(R.string.wrong_clot)
             }
         }
     }
@@ -626,11 +631,11 @@ class MainViewModel(
 
     private fun getPredictedActionText(): String? {
         return when (getScanRequest()) {
-            ScanRequest.CWAR -> resources.getString(R.string.scanCwar)
-            ScanRequest.LOCA -> resources.getString(R.string.scanLoca)
-            ScanRequest.ITEM -> resources.getString(R.string.scanItem)
-            ScanRequest.CLOT -> resources.getString(R.string.scanClot)
-            ScanRequest.NONE -> resources.getString(R.string.enterQnty)
+            ScanRequest.CWAR -> resourcesUseCase.getString(R.string.scanCwar)
+            ScanRequest.LOCA -> resourcesUseCase.getString(R.string.scanLoca)
+            ScanRequest.ITEM -> resourcesUseCase.getString(R.string.scanItem)
+            ScanRequest.CLOT -> resourcesUseCase.getString(R.string.scanClot)
+            ScanRequest.NONE -> resourcesUseCase.getString(R.string.enterQnty)
         }
     }
 
@@ -678,7 +683,7 @@ class MainViewModel(
                                     sendAction(Action.navigateClotsFragment)
                                 },
                                 negativeAction = {
-                                    val unit = repo.getUnitByItem(model.item)
+                                    val unit = mainUseCase.getUnitByItem(model.item)
                                     sendAction(
                                         Action.showSaveDialog(
                                             loca = model.loca,
@@ -761,7 +766,7 @@ class MainViewModel(
             this.sloca = dto.loca
             this.utcDate = Date().time
         }.let { newDto ->
-            repo.replace(newDto = newDto, oldDto = dto)
+            mainUseCase.replace(newDto = newDto, oldDto = dto)
         }
         save()
     }
@@ -772,7 +777,7 @@ class MainViewModel(
             this.utcDate = Date().time
             this.qstr = 0.0
             this.unit = unit ?: ""
-        }.let { repo.insert(it) }
+        }.let { mainUseCase.insert(it) }
         sendAction(Action.showMessage(R.string.save_success))
     }
 
@@ -780,12 +785,12 @@ class MainViewModel(
         model.iop.toDTO().copyPartial(dto).apply {
             this.qnty = qnty
             this.utcDate = Date().time
-        }.let { repo.update(it) }
+        }.let { mainUseCase.update(it) }
         sendAction(Action.showMessage(R.string.save_success))
     }
 
     private fun getIOPByIndex(): IOP.Dto? {
-        return repo.getIOPByIndexSync(
+        return mainUseCase.getIOPByIndexSync(
             cwar = model.cwar,
             loca = model.loca,
             item = model.item,
@@ -794,7 +799,7 @@ class MainViewModel(
     }
 
     private fun getIOPListByCwarItemClotSync(): List<IOP.Dto> {
-        return repo.getIOPListByCwarItemClotSync(
+        return mainUseCase.getIOPListByCwarItemClotSync(
             cwar = model.cwar,
             item = model.item,
             clot = model.clot,
@@ -839,16 +844,13 @@ class MainViewModel(
     }
 }
 
-class MainViewModelFactory(
-    private val repo: MainRepository,
-    private val barcodeController: BarcodeController,
-    private val resourcesProvider: ResourcesProvider,
-    private val dataStore: DataStoreManager
+class MainViewModelFactory @Inject constructor(
+    private val viewModel: MainViewModel
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(repo, barcodeController, resourcesProvider, dataStore) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

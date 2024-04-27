@@ -22,33 +22,25 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.bz.mobile.inventory.App
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.databinding.FragmentSettingsBinding
 import ru.bz.mobile.inventory.presentation.view.main.MainActivity
 import ru.bz.mobile.inventory.presentation.viewModel.settings.Action
 import ru.bz.mobile.inventory.presentation.viewModel.settings.SettingsViewModel
 import ru.bz.mobile.inventory.presentation.viewModel.settings.SettingsViewModelFactory
 import java.io.InputStream
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class SettingsFragment : Fragment() {
-    companion object {
-        val TAG: String =
-            MainActivity::class.java.simpleName + " " + SettingsFragment::class.java.simpleName
-    }
 
-    private val PERMISSION_STORAGE = 101
-    private val FILE_PICKER = 100
+    @Inject
+    lateinit var viewModelFactory: SettingsViewModelFactory
+    private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
 
-    private val viewModel: SettingsViewModel by viewModels {
-        SettingsViewModelFactory(
-            repo = (requireActivity().application as App).settingsRepo,
-            resourcesProvider = ResourcesProvider(requireContext()),
-            dataStore = (requireActivity().application as App).dataStore
-        )
-    }
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
 
@@ -203,6 +195,15 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        val TAG: String =
+            MainActivity::class.java.simpleName + " " + SettingsFragment::class.java.simpleName
+
+        private val PERMISSION_STORAGE = 101
+        private val FILE_PICKER = 100
+
     }
 
 }

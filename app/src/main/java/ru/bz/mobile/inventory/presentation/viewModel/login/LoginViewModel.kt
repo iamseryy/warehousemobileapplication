@@ -8,14 +8,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import ru.bz.mobile.inventory.presentation.viewModel.BindingData
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
+import ru.bz.mobile.inventory.data.local.resource.ResourcesRepository
+import javax.inject.Inject
 
-class LoginViewModel(private val resources: ResourcesProvider) : ViewModel() {
+
+class LoginViewModel @Inject constructor(
+    private val resources: ResourcesRepository
+) : ViewModel() {
 
     private val _actions: Channel<Action> = Channel(Channel.BUFFERED)
     val actions: Flow<Action> = _actions.receiveAsFlow()
-
-    //private val model = LoginModel()
 
     val password = MutableLiveData<BindingData>()
 
@@ -34,10 +36,10 @@ class LoginViewModel(private val resources: ResourcesProvider) : ViewModel() {
     }
 
     private fun validatePassword(): Boolean {
-        with(password.value!!) {
-            when {
 
-                text.isEmpty() -> {
+        with(password.value) {
+            when {
+                this?.text?.isEmpty() ?: true -> {
                     password.postValue(
                         BindingData(
                             "",
@@ -47,7 +49,7 @@ class LoginViewModel(private val resources: ResourcesProvider) : ViewModel() {
                     return false
                 }
 
-                text != resources.getString(R.string.properties_password) -> {
+                this?.text != resources.getString(R.string.properties_password) -> {
                     password.postValue(
                         BindingData(
                             "",
@@ -68,12 +70,15 @@ class LoginViewModel(private val resources: ResourcesProvider) : ViewModel() {
     }
 }
 
-class LoginViewModelFactory(private val resourcesProvider: ResourcesProvider) :
-    ViewModelProvider.Factory {
+
+
+class LoginViewModelFactory @Inject constructor(
+    private val viewModel: LoginViewModel
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(resourcesProvider) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

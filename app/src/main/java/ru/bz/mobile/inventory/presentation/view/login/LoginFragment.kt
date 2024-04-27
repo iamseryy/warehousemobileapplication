@@ -9,20 +9,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.bz.mobile.inventory.databinding.FragmentLoginBinding
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.presentation.viewModel.bindTextTwoWay
 import ru.bz.mobile.inventory.presentation.viewModel.login.LoginViewModel
 import ru.bz.mobile.inventory.presentation.viewModel.login.LoginViewModelFactory
 import ru.bz.mobile.inventory.presentation.viewModel.login.Action
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
-    private val viewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory(ResourcesProvider(requireContext()))
-    }
+    @Inject
+    lateinit var viewModelFactory: LoginViewModelFactory
+    private val viewModel: LoginViewModel by viewModels { viewModelFactory }
+
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 

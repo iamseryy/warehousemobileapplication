@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.bz.mobile.inventory.R
 import ru.bz.mobile.inventory.databinding.ItemClotBinding
 
-import ru.bz.mobile.inventory.model.clots.Clot
+import ru.bz.mobile.inventory.domain.model.clots.Clot
 
 class ClotDiffUtil(
     private val oldList: List<Clot>,

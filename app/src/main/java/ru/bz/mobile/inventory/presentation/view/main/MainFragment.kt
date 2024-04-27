@@ -18,72 +18,34 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.bz.mobile.inventory.App
 import ru.bz.mobile.inventory.presentation.ClotBundle
 import ru.bz.mobile.inventory.presentation.CwarItemBundle
 import ru.bz.mobile.inventory.presentation.CwarItemClotBundle
 import ru.bz.mobile.inventory.presentation.ClotLocaBundle
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.presentation.Validators
 import ru.bz.mobile.inventory.presentation.viewModel.bindTextTwoWay
 import ru.bz.mobile.inventory.presentation.viewModel.bindTo
 import ru.bz.mobile.inventory.presentation.viewModel.bindToMenuItem
 import ru.bz.mobile.inventory.presentation.viewModel.bindTwoWay
-import ru.bz.mobile.inventory.presentation.controllers.BarcodeController
 import ru.bz.mobile.inventory.databinding.FragmentMainBinding
-import ru.bz.mobile.inventory.model.IOP
+import ru.bz.mobile.inventory.domain.model.IOP
 import ru.bz.mobile.inventory.presentation.view.BottomSheetMenuDialog
 import ru.bz.mobile.inventory.presentation.viewModel.main.Action
 import ru.bz.mobile.inventory.presentation.viewModel.main.MainViewModel
 import ru.bz.mobile.inventory.presentation.viewModel.main.MainViewModelFactory
 import ru.bz.mobile.inventory.util.GsonSerializer
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
-    companion object {
-        val TAG: String =
-            MainActivity::class.java.simpleName + " " + MainFragment::class.java.simpleName
 
-        enum class RequestKeys(
-            val requestKey: String,
-            val bundleKey: String,
-            val bundle: (String) -> Any?
-        ) {
-            REQUEST_CLOT(
-                requestKey = "$TAG:REQUEST_CLOT",
-                bundleKey = "$TAG:REQUEST_CLOT",
-                bundle = { bundleStr -> GsonSerializer.deserializeObject<CwarItemBundle>(bundleStr) }),
-            REQUEST_CLOT_LOCA(
-                requestKey = "$TAG:REQUEST_CLOT_LOCA",
-                bundleKey = "$TAG:REQUEST_CLOT_LOCA",
-                bundle = { bundleStr ->
-                    GsonSerializer.deserializeObject<CwarItemClotBundle>(
-                        bundleStr
-                    )
-                }),
-            REQUEST_MAIN_CLOT(
-                requestKey = "$TAG:REQUEST_MAIN_CLOT",
-                bundleKey = "$TAG:REQUEST_MAIN_CLOT",
-                bundle = { bundleStr -> GsonSerializer.deserializeObject<ClotBundle>(bundleStr) }),
-            REQUEST_MAIN_CLOT_LOCA(
-                requestKey = "$TAG:REQUEST_MAIN_CLOT_LOCA",
-                bundleKey = "$TAG:REQUEST_MAIN_CLOT_LOCA",
-                bundle = { bundleStr -> GsonSerializer.deserializeObject<ClotLocaBundle>(bundleStr) }),
-        }
-    }
-
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(
-            (requireActivity().application as App).mainRepo,
-            barcodeController = BarcodeController(
-                context = requireContext()
-            ),
-            resourcesProvider = ResourcesProvider(requireContext()),
-            dataStore = (requireActivity().application as App).dataStore
-        )
-    }
+    @Inject
+    lateinit var viewModelFactory: MainViewModelFactory
+    private val viewModel: MainViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
@@ -542,6 +504,38 @@ class MainFragment : Fragment() {
                     }
                 })
                 .show(requireFragmentManager(), BottomSheetMenuDialog::class.java.simpleName)
+        }
+    }
+
+    companion object {
+        val TAG: String =
+            MainActivity::class.java.simpleName + " " + MainFragment::class.java.simpleName
+
+        enum class RequestKeys(
+            val requestKey: String,
+            val bundleKey: String,
+            val bundle: (String) -> Any?
+        ) {
+            REQUEST_CLOT(
+                requestKey = "$TAG:REQUEST_CLOT",
+                bundleKey = "$TAG:REQUEST_CLOT",
+                bundle = { bundleStr -> GsonSerializer.deserializeObject<CwarItemBundle>(bundleStr) }),
+            REQUEST_CLOT_LOCA(
+                requestKey = "$TAG:REQUEST_CLOT_LOCA",
+                bundleKey = "$TAG:REQUEST_CLOT_LOCA",
+                bundle = { bundleStr ->
+                    GsonSerializer.deserializeObject<CwarItemClotBundle>(
+                        bundleStr
+                    )
+                }),
+            REQUEST_MAIN_CLOT(
+                requestKey = "$TAG:REQUEST_MAIN_CLOT",
+                bundleKey = "$TAG:REQUEST_MAIN_CLOT",
+                bundle = { bundleStr -> GsonSerializer.deserializeObject<ClotBundle>(bundleStr) }),
+            REQUEST_MAIN_CLOT_LOCA(
+                requestKey = "$TAG:REQUEST_MAIN_CLOT_LOCA",
+                bundleKey = "$TAG:REQUEST_MAIN_CLOT_LOCA",
+                bundle = { bundleStr -> GsonSerializer.deserializeObject<ClotLocaBundle>(bundleStr) }),
         }
     }
 }

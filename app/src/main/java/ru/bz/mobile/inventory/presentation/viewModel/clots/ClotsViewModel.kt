@@ -10,18 +10,17 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import ru.bz.mobile.inventory.presentation.ClotBundle
 import ru.bz.mobile.inventory.presentation.CwarItemBundle
 import ru.bz.mobile.inventory.presentation.CwarItemClotBundle
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.presentation.adapter.ClotActionListener
 import ru.bz.mobile.inventory.presentation.adapter.ClotAdapter
-import ru.bz.mobile.inventory.model.clots.Clot
-import ru.bz.mobile.inventory.model.clots.ClotModel
-import ru.bz.mobile.inventory.data.room.ClotRepository
+import ru.bz.mobile.inventory.domain.model.clots.Clot
+import ru.bz.mobile.inventory.domain.model.clots.ClotModel
+import ru.bz.mobile.inventory.domain.usecase.ClotUseCase
+import javax.inject.Inject
 
 typealias ClotListener = (clots: List<Clot>) -> Unit
 
-class ClotsViewModel(
-    private val repo: ClotRepository,
-    private val resources: ResourcesProvider
+class ClotsViewModel @Inject constructor(
+    private val useCase: ClotUseCase
 ) : ViewModel() {
 
     private val _actions: Channel<Action> = Channel(Channel.BUFFERED)
@@ -38,6 +37,7 @@ class ClotsViewModel(
         }
 
     })
+
     private val model = ClotModel()
 
     fun onViewCreated() {
@@ -159,140 +159,20 @@ class ClotsViewModel(
     }
 
     private fun getClotsFromRepo(cwar: String, item: String): List<Clot> {
-        val clotsRepo = repo.getClotsListGroupedByClotLocaUnitPornSync(cwar, item)
+        val clotsRepo = useCase.getClotsListGroupedByClotLocaUnitPornSync(cwar, item)
         return clotsRepo.mapIndexed { id, item -> item.toClot(id = id) }
     }
 
-    private fun getFakeClots(): List<Clot> {
-        return listOf(
-            Clot(
-                id = 1,
-                isEnabled = false,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "Fсновное",
-                locaSize = 1,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 2,
-                clot = "059999-MIG-600",
-                isEnabled = false,
-                porn = "C01000224",
-                loca = "Fсновное",
-                locaSize = 1,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 3,
-                isEnabled = false,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "Fсновное",
-                locaSize = 1,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 4,
-                isEnabled = false,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "Fсновное",
-                locaSize = 1,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 5,
-                isEnabled = false,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "Fсновное",
-                locaSize = 1,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 6,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 7,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 8,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 9,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 10,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-            Clot(
-                id = 11,
-                clot = "059999-MIG-600",
-                porn = "C01000224",
-                loca = "",
-                locaSize = 2,
-                qstrSum = 15.0,
-                qntySum = 1.0,
-                unit = "fake",
-            ),
-        )
-    }
 }
 
-class ClotsViewModelFactory(
-    private val repo: ClotRepository,
-    private val resourcesProvider: ResourcesProvider
+class ClotsViewModelFactory @Inject constructor(
+    private val viewModel: ClotsViewModel
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ClotsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ClotsViewModel(repo, resourcesProvider) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

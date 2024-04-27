@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.bz.mobile.inventory.R
 import ru.bz.mobile.inventory.databinding.ItemLocaBinding
 
-import ru.bz.mobile.inventory.model.locas.Loca
+import ru.bz.mobile.inventory.domain.model.locas.Loca
 
 class LocaDiffUtil(
     private val oldList: List<Loca>,

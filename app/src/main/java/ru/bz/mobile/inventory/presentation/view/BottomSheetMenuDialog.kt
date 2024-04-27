@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ru.bz.mobile.inventory.R
 import ru.bz.mobile.inventory.databinding.FragmentBottomSheetMenuDialogBinding
+
 
 class BottomSheetMenuDialog(private val listener: DialogDismissListener) :
     BottomSheetDialogFragment() {

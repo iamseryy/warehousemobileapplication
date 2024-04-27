@@ -13,26 +13,26 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.bz.mobile.inventory.App
 import ru.bz.mobile.inventory.presentation.CwarItemBundle
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.databinding.FragmentClotsBinding
 import ru.bz.mobile.inventory.util.GsonSerializer
 import ru.bz.mobile.inventory.presentation.view.main.MainFragment
 import ru.bz.mobile.inventory.presentation.viewModel.clots.Action
 import ru.bz.mobile.inventory.presentation.viewModel.clots.ClotsViewModel
 import ru.bz.mobile.inventory.presentation.viewModel.clots.ClotsViewModelFactory
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class ClotsFragment : Fragment() {
 
-    private val viewModel: ClotsViewModel by viewModels {
-        ClotsViewModelFactory(
-            (requireActivity().application as App).clotRepo,
-            ResourcesProvider(requireContext())
-        )
-    }
+    @Inject
+    lateinit var viewModelFactory: ClotsViewModelFactory
+    private val viewModel: ClotsViewModel by viewModels { viewModelFactory }
+
     private var _binding: FragmentClotsBinding? = null
     private val binding get() = _binding!!
 

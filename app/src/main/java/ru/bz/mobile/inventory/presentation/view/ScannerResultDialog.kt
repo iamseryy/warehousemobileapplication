@@ -11,6 +11,7 @@ import ru.bz.mobile.inventory.databinding.FragmentScannerResultDialogListDialogB
 const val ARG_SCANNING_RESULT = "scanning_result"
 const val ARG_SCANNING_HINT= "scanning_hint"
 
+
 class ScannerResultDialog(private val listener: DialogDismissListener) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentScannerResultDialogListDialogBinding

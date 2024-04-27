@@ -9,18 +9,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import ru.bz.mobile.inventory.presentation.ClotLocaBundle
 import ru.bz.mobile.inventory.presentation.CwarItemClotBundle
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.presentation.adapter.LocaActionListener
 import ru.bz.mobile.inventory.presentation.adapter.LocaAdapter
-import ru.bz.mobile.inventory.model.locas.Loca
-import ru.bz.mobile.inventory.model.locas.LocaModel
-import ru.bz.mobile.inventory.data.room.LocaRepository
+import ru.bz.mobile.inventory.domain.model.locas.Loca
+import ru.bz.mobile.inventory.domain.model.locas.LocaModel
+import ru.bz.mobile.inventory.domain.usecase.LocaUseCase
+import javax.inject.Inject
 
 typealias LocaListener = (locas: List<Loca>) -> Unit
 
-class LocasViewModel(
-    private val repo: LocaRepository,
-    private val resources: ResourcesProvider
+class LocasViewModel @Inject constructor(
+    private val useCase: LocaUseCase
 ) : ViewModel() {
 
     private val _actions: Channel<Action> = Channel(Channel.BUFFERED)
@@ -84,7 +83,7 @@ class LocasViewModel(
         return ClotLocaBundle(clot = model.clot, loca = model.loca!!.loca)
     }
     private fun getLocasFromRepo(cwar: String, item: String, clot: String): List<Loca> {
-        val repo = repo.getLocasListByCwarItemClotSync(cwar = cwar, item = item, clot = clot)
+        val repo = useCase.getLocasListByCwarItemClotSync(cwar = cwar, item = item, clot = clot)
         return repo.mapIndexed { i, locaDTO -> locaDTO.toLoca(id = i) }
     }
     fun check(loca: Loca) {
@@ -109,7 +108,7 @@ class LocasViewModel(
         setLoca(if (isChecked) locas[index] else null)
         notifyChanges()
     }
-    fun setLoca(loca:Loca?) {
+    fun setLoca(loca: Loca?) {
         model.loca = loca
         this.loca.postValue(loca)
         fabVisibility.postValue(if (loca == null) View.INVISIBLE else View.VISIBLE)
@@ -138,15 +137,15 @@ class LocasViewModel(
 
 }
 
-class LocasViewModelFactory(
-    private val repo: LocaRepository,
-    private val resources: ResourcesProvider
+class LocasViewModelFactory @Inject constructor(
+    private val viewModel: LocasViewModel
+
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LocasViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LocasViewModel(repo, resources) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

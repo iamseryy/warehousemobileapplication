@@ -13,25 +13,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.platform.MaterialSharedAxis
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.bz.mobile.inventory.App
 import ru.bz.mobile.inventory.presentation.CwarItemClotBundle
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
 import ru.bz.mobile.inventory.databinding.FragmentLocasBinding
 import ru.bz.mobile.inventory.util.GsonSerializer
 import ru.bz.mobile.inventory.presentation.view.main.MainFragment
 import ru.bz.mobile.inventory.presentation.viewModel.locas.LocasViewModel
 import ru.bz.mobile.inventory.presentation.viewModel.locas.LocasViewModelFactory
 import ru.bz.mobile.inventory.presentation.viewModel.locas.Action
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class LocasFragment : Fragment() {
 
-    private val viewModel: LocasViewModel by viewModels {
-        LocasViewModelFactory(
-            (requireActivity().application as App).locaRepo, ResourcesProvider(requireContext())
-        )
-    }
+    @Inject
+    lateinit var viewModelFactory: LocasViewModelFactory
+    private val viewModel: LocasViewModel by viewModels { viewModelFactory }
 
     private var _binding: FragmentLocasBinding? = null
     private val binding get() = _binding!!

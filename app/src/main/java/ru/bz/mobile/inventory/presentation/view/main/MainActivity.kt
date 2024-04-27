@@ -7,9 +7,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ru.bz.mobile.inventory.R
 import ru.bz.mobile.inventory.databinding.ActivityMainBinding
 
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     companion object {

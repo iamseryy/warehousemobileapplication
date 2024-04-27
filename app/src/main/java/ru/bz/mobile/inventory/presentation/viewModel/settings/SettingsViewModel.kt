@@ -9,20 +9,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ru.bz.mobile.inventory.R
-import ru.bz.mobile.inventory.presentation.ResourcesProvider
-import ru.bz.mobile.inventory.config.DataStoreManager
-import ru.bz.mobile.inventory.model.DataStoreSave
-import ru.bz.mobile.inventory.model.settings.SettingsModel
-import ru.bz.mobile.inventory.data.room.SettingsRepository
-import ru.bz.mobile.inventory.util.FileUtils
+import ru.bz.mobile.inventory.domain.model.DataStoreSave
+import ru.bz.mobile.inventory.domain.model.settings.SettingsModel
+import ru.bz.mobile.inventory.domain.usecase.DataStoreUseCase
+import ru.bz.mobile.inventory.domain.usecase.FileUseCase
+import ru.bz.mobile.inventory.domain.usecase.ResourcesUseCase
+import ru.bz.mobile.inventory.domain.usecase.SettingsUseCase
 import java.io.InputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
+import javax.inject.Inject
 
-class SettingsViewModel(
-    private val repo: SettingsRepository,
-    private val resources: ResourcesProvider,
-    private val dataStore: DataStoreManager
+class SettingsViewModel @Inject constructor(
+    private val settingsUseCase: SettingsUseCase,
+    private val resourcesUseCase: ResourcesUseCase,
+    private val dataStoreUseCase: DataStoreUseCase,
+    private val fileUseCase: FileUseCase
 ) : ViewModel() {
     private val _actions: Channel<Action> = Channel(Channel.BUFFERED)
     val actions: Flow<Action> = _actions.receiveAsFlow()
@@ -50,31 +52,31 @@ class SettingsViewModel(
 
     fun import(inputStream: InputStream?) {
         viewModelScope.launch {
-            repo.deleteAll()
+            settingsUseCase.deleteAll()
             val encoding =
-                Charset.forName(resources.getString(R.string.properties_file_import_encoding))
+                Charset.forName(resourcesUseCase.getString(R.string.properties_file_import_encoding))
             if (inputStream == null) {
                 sendAction(Action.showMessage(R.string.import_file_is_empty))
                 return@launch
             }
-            val iops = FileUtils.importCsv(inputStream, encoding)
+            val iops = fileUseCase.importCsv(inputStream, encoding)
             if (iops.isEmpty()) {
                 sendAction(Action.showMessage(R.string.import_file_data_is_empty))
                 return@launch
             }
-            dataStore.save(DataStoreSave(isInventoryDataImported = true))
-            repo.insertAll(iops)
+            dataStoreUseCase.save(DataStoreSave(isInventoryDataImported = true))
+            settingsUseCase.insertAll(iops)
             sendAction(Action.showMessage(R.string.inventory_data_imported))
         }
     }
 
     private fun export() {
         viewModelScope.launch {
-            val iops = repo.getAllNotUTCZeroSync()
+            val iops = settingsUseCase.getAllNotUTCZeroSync()
             val file = getFullPathFile()
             val encoding =
-                Charset.forName(resources.getString(R.string.properties_file_export_encoding))
-            FileUtils.exportCsv(file, iops, encoding)
+                Charset.forName(resourcesUseCase.getString(R.string.properties_file_export_encoding))
+            fileUseCase.exportCsv(file, iops, encoding)
             sendAction(Action.showMessage(R.string.inventory_data_exported))
         }
     }
@@ -88,22 +90,20 @@ class SettingsViewModel(
     }
 
     private fun getFullPathFile(): OutputStream {
-        val fileName = resources.getString(R.string.properties_file_export)
+        val fileName = resourcesUseCase.getString(R.string.properties_file_export)
         return Environment.getExternalStoragePublicDirectory("${Environment.DIRECTORY_DOWNLOADS}/$fileName")
             .outputStream()
     }
 }
 
-class SettingsViewModelFactory(
-    private val repo: SettingsRepository,
-    private val resourcesProvider: ResourcesProvider,
-    private val dataStore: DataStoreManager
+class SettingsViewModelFactory @Inject constructor(
+    private val viewModel: SettingsViewModel
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SettingsViewModel(repo, resourcesProvider, dataStore) as T
+            return viewModel as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

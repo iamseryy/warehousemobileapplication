@@ -1,6 +1,6 @@
 package ru.bz.mobile.inventory.presentation.viewModel.main
 
-import ru.bz.mobile.inventory.model.IOP
+import ru.bz.mobile.inventory.domain.model.IOP
 
 sealed interface Action {
     data class showMessage(val messageId: Int) : Action

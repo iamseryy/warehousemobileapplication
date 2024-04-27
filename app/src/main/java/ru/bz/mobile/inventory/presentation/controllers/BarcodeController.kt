@@ -9,9 +9,11 @@ import com.honeywell.aidc.ScannerNotClaimedException
 import com.honeywell.aidc.ScannerUnavailableException
 import com.honeywell.aidc.TriggerStateChangeEvent
 import com.honeywell.aidc.UnsupportedPropertyException
-import ru.bz.mobile.inventory.model.main.ScanResultListener
+import ru.bz.mobile.inventory.domain.model.scanner.ScanResultListener
 
 import java.nio.charset.Charset
+
+
 
 class BarcodeController(
     private val context: Context,
@@ -90,7 +92,7 @@ class BarcodeController(
             )
         }
     }
-    fun addListener(resultListener:ScanResultListener) {
+    fun addListener(resultListener: ScanResultListener) {
         this.resultListener = resultListener
     }
     fun removeListener() {

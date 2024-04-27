@@ -1,10 +1,13 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    id("org.jetbrains.kotlin.android")
+    //id("kotlin-android")
     id("kotlin-kapt")
-    id("com.google.devtools.ksp") version "1.9.10-1.0.13"
+    id("dagger.hilt.android.plugin")
+    //id("com.google.devtools.ksp") version "1.9.10-1.0.13"
     kotlin("plugin.serialization") version "1.9.22"
 }
+
 android {
     namespace = "ru.bz.mobile.inventory"
     compileSdk = 34
@@ -50,7 +53,8 @@ val String.version: String
     get() =rootProject.extra[this].toString()
 
 dependencies {
-//    implementation("androidx.core:core-ktx:${"coreVersion".version}")
+    //implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:${"coreVersion".version}")
     implementation("androidx.appcompat:appcompat:${"appCompatVersion".version}")
     implementation("androidx.activity:activity-ktx:${"activityVersion".version}")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
@@ -59,12 +63,19 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     // Room components
+//    implementation("androidx.room:room-runtime:2.6.1")
+//    implementation("androidx.room:room-ktx:2.6.1")
+//    kapt("androidx.room:room-compiler:2.6.1")
+
     implementation ("androidx.room:room-ktx:${"roomVersion".version}")
+    kapt("androidx.room:room-compiler:2.6.1")
+    //ksp("androidx.room:room-compiler:${"roomVersion".version}")
+    androidTestImplementation ("androidx.room:room-testing:${"roomVersion".version}")
+
     implementation("androidx.datastore:datastore-core:1.0.0")
     implementation("androidx.annotation:annotation:1.6.0")
     implementation("androidx.navigation:navigation-fragment:2.7.4")
-    ksp("androidx.room:room-compiler:${"roomVersion".version}")
-    androidTestImplementation ("androidx.room:room-testing:${"roomVersion".version}")
+
 
     // Lifecycle components
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${"lifecycleVersion".version}")
@@ -86,12 +97,15 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:${"androidxJunitVersion".version}")
     androidTestImplementation("androidx.test.espresso:espresso-core:${"espressoVersion".version}")
 
-    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation ("androidx.datastore:datastore-preferences:1.1.0")
 
     implementation("androidx.navigation:navigation-fragment-ktx:${"navigationUIVersion".version}")
     implementation("androidx.navigation:navigation-ui-ktx:${"navigationUIVersion".version}")
 
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    implementation("com.google.dagger:hilt-android:2.51")
+    kapt("com.google.dagger:hilt-compiler:2.51")
 }
 
 
