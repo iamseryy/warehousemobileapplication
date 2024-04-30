@@ -138,7 +138,6 @@ class MainViewModel @Inject constructor(
             }
     }
 
-
     private fun getScanRequest(): ScanRequest {
         return when {
             model.iopIsEmpty -> ScanRequest.CWAR

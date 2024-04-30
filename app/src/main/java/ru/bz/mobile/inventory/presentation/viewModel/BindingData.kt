@@ -50,15 +50,6 @@ fun TextInputLayout.bindTextTwoWay(
         )
         onChange?.invoke(s.toString())
     }
-//        validator?.validate(s)?.let { isValid ->
-//            liveData.postValue(liveData.value!!.apply {
-//                text = (if (isValid) s else s?.take(start)).toString()
-//                onChange?.invoke(text)
-//            })
-//        } ?: liveData.postValue(liveData.value!!.apply {
-//            text = s.toString()
-//            onChange?.invoke(text)
-//        })
 
     liveData.observe(lifecycleOwner) { bindingData ->
         if (bindingData.observe) {
@@ -67,9 +58,6 @@ fun TextInputLayout.bindTextTwoWay(
             error = bindingData.error
             isErrorEnabled = bindingData.isErrorEnabled
         }
-        // if (editText?.text.toString() == bindingData.text && isErrorEnabled == bindingData.isErrorEnabled) return@observe
-
-
     }
 }
 

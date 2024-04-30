@@ -44,9 +44,6 @@ class BarcodeController(
         }
 
     }
-    init {
-
-    }
 
     private fun setBarcodeSettings() {
         if (barcodeReader != null) {

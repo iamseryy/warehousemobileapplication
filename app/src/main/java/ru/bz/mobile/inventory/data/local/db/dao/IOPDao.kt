@@ -26,8 +26,6 @@ interface IOPDao {
     @Query("SELECT * FROM $WHINH501 WHERE utcDate > 0")
     fun getAllNotUTCZeroSync(): List<IOP.Dto>
 
-
-
     @Query("SELECT * FROM $WHINH501 LIMIT 1")
     fun getFirstSync(): IOP.Dto?
 
