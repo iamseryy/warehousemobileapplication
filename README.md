@@ -40,7 +40,7 @@
 8. Приложения (~33 стр.)
 ---
 ### Ссылка на диплом - https://github.com/iamseryy/warehousemobileapplication/blob/main/docs/diplom.docx
-### Ссылка на apk приложения - https://github.com/iamseryy/warehousemobileapplication/app/release
+### Ссылка на apk приложения - https://github.com/iamseryy/warehousemobileapplication/blob/main/app/release/app-release.apk
 ### Ссылка на Honeywell_MobilitySDK_Android -  https://github.com/iamseryy/warehousemobileapplication/blob/main/docs/Honeywell_MobilitySDK_Android_v1.00.00.0054.zip
 ---
 ## Особенности тестирования
