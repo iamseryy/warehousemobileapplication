@@ -581,7 +581,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun clearCwar() {
-        model.cwar = ""
+        model.cwar = "W3333"
         model.cwarError = null
         clearLoca()
         clearClot()
