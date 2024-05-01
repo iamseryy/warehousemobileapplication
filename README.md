@@ -39,4 +39,19 @@
 7. СПИСОК ИСПОЛЬЗОВАННЫХ ИСТОЧНИКОВ	(~1 стр.)
 8. Приложения (~33 стр.)
 ---
-### Ссылка на диплом - 
+### Ссылка на диплом - https://github.com/iamseryy/warehousemobileapplication/blob/main/docs/diplom.docx
+### Ссылка на apk приложения - https://github.com/iamseryy/warehousemobileapplication/app/release
+### Ссылка на Honeywell_MobilitySDK_Android -  https://github.com/iamseryy/warehousemobileapplication/blob/main/docs/Honeywell_MobilitySDK_Android_v1.00.00.0054.zip
+---
+## Особенности тестирования
+
+1.	Инструкция по эксплуатации приложения представлена в Приложении 4 диплома.
+2.	Необходимые DataMatrix коды представлены в Приложении 1 диплома.
+3.	Файл для импорта данных инвентаризации import.csv доступен по ссылке на github проекта -   https://github.com/iamseryy/warehousemobileapplication/tree/main/docs
+4.	Пароль в раздел приложения settings для импорта/экспорта файла – 111
+5.	Полное функциональное тестирование приложения в соответствии с функциональными требованиями возможно только на терминалах сбора данных Honeywell EDA50k-1.
+6.	Частичное тестирование, не требующее штатного сканера терминалах сбора данных Honeywell EDA50k-1, возможно с использованием Android Studio и Android Virtual Device. Для этого необходимо в класс MainViewModel в функции clearCwar() задать значение поля склад cwar = “W3333”, как на рисунке. 
+
+![](./docs/img-cwar_default.png)
+
+Это необходимо, т.к. значение поля склад заполняется только через штатный сканер терминала сбора данных. Остальные поля - место, изделие, партия, доступны для изменения вручную, см. инструкцию по эксплуатации Приложение 4 диплома.
